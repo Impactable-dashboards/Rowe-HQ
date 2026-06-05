@@ -300,6 +300,55 @@
   .cc-apr{font-size:11px;color:var(--muted);font-weight:700;margin-top:2px}
   .cc-bal{margin-left:auto;text-align:right;align-self:flex-start}
   .cc-bal .b{font-size:14.5px;font-weight:800}
+  /* mobile responsive */
+  .hamb{display:none;width:38px;height:38px;border-radius:10px;border:1px solid var(--line-soft);background:var(--surface);color:var(--ink);align-items:center;justify-content:center;cursor:pointer;flex:0 0 38px}
+  .hamb svg{width:20px;height:20px}
+  .scrim{display:none}
+  @media(max-width:860px){
+    .sidebar{position:fixed;left:0;top:0;height:100vh;width:264px;transform:translateX(-100%);transition:transform .28s cubic-bezier(.2,.7,.3,1);z-index:60;box-shadow:0 0 60px rgba(0,0,0,.6)}
+    .sidebar.open{transform:none}
+    .scrim{display:block;position:fixed;inset:0;background:rgba(0,0,0,.55);opacity:0;visibility:hidden;transition:.25s;z-index:55}
+    .scrim.show{opacity:1;visibility:visible}
+    .hamb{display:flex}
+    .topbar{padding:13px 16px;gap:12px}
+    .topbar .ttl{font-size:20px}
+    .topbar .sub{font-size:12px}
+    .avatars{display:none}
+    .canvas{padding:20px 16px 26px}
+    .banner{padding:18px 18px;flex-wrap:wrap}
+    .banner .big-av{width:50px;height:50px;flex:0 0 50px;font-size:22px}
+    .banner h2{font-size:22px}
+    .bstats{margin-left:0;width:100%;margin-top:6px;flex-wrap:wrap;gap:10px}
+    .bstat{flex:1 1 70px;min-width:0}
+    .cal-head{gap:10px}
+    .cal-head .mo{font-size:18px}
+    .legend{width:100%;margin-left:0}
+    .grid{grid-auto-rows:minmax(80px,auto)}
+    .calendar.compact .grid{grid-auto-rows:minmax(62px,auto)}
+    .cell{padding:6px 5px 5px}
+    .num{width:21px;height:21px;font-size:11.5px;margin-bottom:4px}
+    .weekdays div{padding:8px 4px;font-size:9px;letter-spacing:.03em}
+    .ev{font-size:9.5px;padding:2px 5px;border-radius:5px;margin-bottom:3px}
+    .ev.soft{padding-left:13px}
+    .more{font-size:9.5px}
+    .tabs{flex-wrap:nowrap;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+    .tabs::-webkit-scrollbar{display:none}
+    .tab{flex:0 0 auto}
+    .panel{padding:17px 16px}
+    .cp-wrap{padding:8px 16px 0}
+    .chatdock{padding:11px 16px 14px}
+    .dock-bar{gap:9px;padding:9px 9px 9px 11px}
+    .dock-bar input{font-size:14px}
+    .fin-tile .v{font-size:24px}
+  }
+  @media(max-width:560px){
+    .today-chip{display:none}
+    .dock-scope{display:none}
+    .banner .glow{display:none}
+    .dsend{padding:10px 12px}
+    .bstat .n{font-size:20px}
+    .dchip{font-size:11.5px;padding:6px 11px}
+  }
 </style>
 </head>
 <body>
@@ -329,9 +378,11 @@
   </nav>
   <div class="side-foot"><div class="sync"><span class="live"></span>Synced · <b>ClickUp</b> · <b>Drive</b> · <b>Claude</b></div></div>
 </aside>
+<div class="scrim" id="scrim"></div>
 
 <main class="main">
   <div class="topbar">
+    <button class="hamb" id="hamb" aria-label="Menu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 6h18M3 12h18M3 18h18"/></svg></button>
     <div><div class="ttl" id="viewTitle">Home</div><div class="sub" id="viewSub">Everything the family has going on, in one place</div></div>
     <div class="today-chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>Thu, June 4</div>
     <div class="avatars"><div class="av" style="background:var(--forest)">S</div><div class="av" style="background:var(--fern)">J</div><div class="av" style="background:var(--amber)">L</div><div class="av" style="background:var(--clay)">D</div></div>
@@ -629,6 +680,12 @@ document.querySelectorAll('[data-view]').forEach(el=>el.addEventListener('click'
 const ft=document.getElementById('familyToggle'),fm=document.getElementById('familyMenu');
 ft.addEventListener('click',()=>{ft.classList.toggle('open');fm.classList.toggle('open')});
 ft.classList.add('open');fm.classList.add('open');
+const sb=document.querySelector('.sidebar'),scrim=document.getElementById('scrim'),hamb=document.getElementById('hamb');
+function openDrawer(){sb.classList.add('open');scrim.classList.add('show');}
+function closeDrawer(){sb.classList.remove('open');scrim.classList.remove('show');}
+hamb.addEventListener('click',openDrawer);
+scrim.addEventListener('click',closeDrawer);
+document.querySelectorAll('[data-view]').forEach(el=>el.addEventListener('click',closeDrawer));
 renderCalendar();
 
 /* ---- persistent chat dock ---- */
